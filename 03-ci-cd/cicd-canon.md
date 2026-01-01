@@ -141,6 +141,11 @@ Complex branching model with multiple long-lived branches (master, develop, feat
 - **Enforces Workflow:** Makes the PR workflow mandatory, not optional.
 - **Guarantees Quality:** Ensures no broken code (failed builds) ever reaches production.
 
+> [!WARNING]
+> **Free Plan Limitation**: If Branch Protection Rules fail to apply via CLI with a 403/Upgrade error, it is likely because the Organization is on a **GitHub Free** plan with **Private** repositories. These features are locked.
+>
+> **Protocol**: If this failure occurs, **notify the user** immediately with a note explaining the limitation. Do not retry endlessly. Proceed with manual discipline (no direct pushes).
+
 ---
 
 ## Section 2: Pipeline Architecture and Best Practices

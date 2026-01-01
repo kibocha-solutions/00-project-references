@@ -16,6 +16,7 @@ This CI/CD canon covers:
 - GitFlow (not recommended for CI/CD)
 - Commit standards
 - **Git Remote & PR Protocol (Aliases)** (See AGENTS.md Section 5A.1)
+- **Branch Protection Limitations** (Free Plan awareness)
 
 ### 2. Pipeline Architecture and Best Practices
 - Core principles (fail fast, single path to production, automate everything)

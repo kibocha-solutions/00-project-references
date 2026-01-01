@@ -417,6 +417,12 @@ for manual page refresh after MFA verification.
        git remote set-url origin git@kibocha:codelf-solutions/adeo.git
        ```
 
+**Handling Branch Protection Failures:**
+If attempting to apply branch protection rules (via `gh` or API) fails with an "Upgrade to Pro" message:
+1. **Stop** retrying.
+2. **Notify the user** that the Organization is likely on a Free plan for private repositories.
+3. **Exit** the task/setup step with this note (see `03-ci-cd/cicd-canon.md` for protocol).
+
 **When performing CI/CD operations ONLY, read:**
 
 ```
