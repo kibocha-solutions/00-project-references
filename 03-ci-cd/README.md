@@ -15,6 +15,7 @@ This CI/CD canon covers:
 - GitHub Flow (alternative)
 - GitFlow (not recommended for CI/CD)
 - Commit standards
+- **Git Remote & PR Protocol (Aliases)** (See AGENTS.md Section 5A.1)
 
 ### 2. Pipeline Architecture and Best Practices
 - Core principles (fail fast, single path to production, automate everything)
