@@ -1,10 +1,10 @@
-# Documentation Canon v4: Production-Grade Standards for Technical Documentation
+# Documentation Canon v5: Production-Grade Standards for Technical Documentation
 
 ## Overview
 
 This document serves as the authoritative guide for generating production-grade technical documentation across all projects. It specifies documentation types, required structures, format languages, access levels, and integration patterns. Agents generating documentation should reference this canon before creating any technical document.
 
-This canon is built on two core language standards: **reStructuredText (reST)** for narrative documentation and **API-specific standards** (OpenAPI YAML for REST, GraphQL SDL for GraphQL, Protocol Buffers for gRPC). All narrative documentation is processed through **Sphinx** for HTML/PDF generation.
+This canon is built on **JetBrains Writerside** as the primary documentation platform, using **Markdown with semantic markup** for narrative documentation and **API-specific standards** (OpenAPI YAML for REST, GraphQL SDL for GraphQL, Protocol Buffers for gRPC). All documentation is authored in Writerside and exported to static HTML or PDF.
 
 ---
 
@@ -70,34 +70,33 @@ All documentation must be classified by access level to ensure proper handling, 
 
 ## Part 2: Core Documentation Languages & Technologies
 
-### 2.1 reStructuredText (reST): Primary Documentation Language
+### 2.1 Writerside with Markdown: Primary Documentation Platform
 
-**Standard:** reStructuredText is the primary format for all narrative technical documentation.
+**Standard:** JetBrains Writerside with Markdown (CommonMark) and semantic XML markup is the primary format for all narrative technical documentation.
 
 **Rationale:**
-- Semantic structure designed for technical documentation
-- Standard extension mechanism via directives and roles
-- Automatic cross-referencing between documents
-- Rich features: footnotes, citations, tables of contents, glossaries
-- Multiple output formats: HTML, PDF, ePub, man pages from single source
-- Version-control friendly (plain text)
-- Mature ecosystem (20+ years, actively maintained)
+- Modern authoring experience with live preview in IDE
+- Markdown ease-of-use with semantic structure when needed
+- Integrates API specifications (OpenAPI) with narrative documentation
+- Smart completion, validation, and inspections built-in
+- Multiple output formats: HTML, PDF from single source
+- Version-control friendly (plain text Markdown)
+- AI-friendly (generates llms.txt for AI context)
 
-**Processing Tool:** Sphinx (Python documentation generator)
-- Installation: `pip install sphinx sphinx-rtd-theme`
-- Build: `sphinx-build -b html source build`
-- Output: Static HTML website (responsive, searchable, with dark mode support)
+**Authoring Tool:** JetBrains Writerside (IntelliJ IDEA plugin)
+- Installation: IntelliJ IDEA Community Edition (free) + Writerside plugin
+- Setup: File → New → Project → Writerside → Starter Project
+- Preview: Live preview in Writerside Preview tool window
+- Build: Export To → Web Archive (static HTML)
+- Output: Static HTML website (responsive, searchable, customizable)
 
 **Syntax Reference:**
-```rst
-Title (Top Level)
-=================
+```markdown
+# Title (Top Level)
 
-Section (Level 2)
------------------
+## Section (Level 2)
 
-Subsection (Level 3)
-~~~~~~~~~~~~~~~~~~~~
+### Subsection (Level 3)
 
 Paragraph text with **bold**, *italic*, and ``code``.
 
@@ -515,53 +514,48 @@ enum TaxType {
 
 ---
 
-### 2.6 Sphinx Integration
+### 2.6 Writerside Integration
 
-**Purpose:** Central processing engine that transforms reST source files into production-grade HTML/PDF documentation.
+**Purpose:** Central authoring and build platform that transforms Markdown source files with semantic markup into production-grade HTML/PDF documentation.
 
-**Configuration:** `docs/source/conf.py`
+**Setup:** Writerside project with `.tree` files
 
-**Key Settings:**
-```python
-# Theme (choose one)
-html_theme = 'furo'  # or 'sphinx_rtd_theme'
+**Key Components:**
+```
+project-root/
+├── writerside.cfg                     # Project configuration
+├── topics/                            # Markdown/XML topics
+│   ├── starter.md                     # Main landing page
+│   ├── getting-started.md             # Quick start guide
+│   └── ...                            # Additional topics
+├── c.tree                             # Table of contents (instance tree)
+└── images/                            # Images and diagrams
+```
 
-# Project metadata
-project = 'Project Name'
-copyright = '2025, Your Organization'
-author = 'Author Name'
-version = '1.0'
-
-# Extensions
-extensions = [
-    'sphinx.ext.autodoc',           # Auto-generate docs from code
-    'sphinx.ext.intersphinx',       # Link to other Sphinx docs
-    'sphinx.ext.viewcode',          # Link to source code
-    'sphinx_rtd_theme',             # Read the Docs theme
-]
-
-# Build options
-html_static_path = ['_static']
-html_logo = 'logo.png'
-html_favicon = 'favicon.ico'
+**Writerside Project Configuration (`writerside.cfg`):**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ihp SYSTEM "https://resources.jetbrains.com/writerside/1.0/ihp.dtd">
+<ihp version="2.0">
+    <settings>
+        <name>Project Name</name>
+        <version>1.0</version>
+    </settings>
+    <topics dir="topics" web-path="/"/>
+    <images dir="images" web-path="images"/>
+</ihp>
 ```
 
 **Build Process:**
-```bash
-# Full build
-sphinx-build -b html docs/source docs/build
-
-# Watch for changes (development)
-sphinx-autobuild docs/source docs/build
-
-# Treat warnings as errors (CI/CD)
-sphinx-build -W -b html docs/source docs/build
-```
+- **Local Preview:** Live preview in Writerside Preview tool window (automatic)
+- **Export:** Writerside tool window → Export To → Web Archive
+- **Output:** Static HTML (ZIP archive, extract and deploy)
+- **PDF Export:** Export To → PDF
 
 **Output:**
-- Static HTML website (fully responsive, searchable)
+- Static HTML website (fully responsive, searchable, customizable)
 - PDF export capability
-- Hosted on GitHub Pages, Read the Docs, or custom server
+- Hosted on GitHub Pages, Netlify, or custom server
 - No server-side processing required
 
 ---
@@ -573,7 +567,7 @@ Each documentation type below includes:
 - **Scope:** What it covers
 - **Access Level:** Classification (Public, Internal, Restricted, Confidential)
 - **When to Create:** Lifecycle timing
-- **Format:** reST, OpenAPI YAML, GraphQL SDL, or Proto3
+- **Format:** Markdown (.md), OpenAPI YAML, GraphQL SDL, or Proto3
 - **Location:** File path in repository
 - **Structure:** Directory layout and file organization
 - **Contents:** Detailed file-by-file breakdown
@@ -597,78 +591,66 @@ Each documentation type below includes:
 - **Update:** After major architectural changes
 - **Frequency:** Review quarterly, update as needed
 
-**Format:** reST
+**Format:** Markdown (.md) with Writerside semantic markup
 
-**Location:** `/docs/source/architecture/`
+**Location:** `/docs/writerside/topics/architecture/`
 
 **Directory Structure:**
 ```
-docs/source/architecture/
-├── 00-overview.rst                 # Main architecture document (entry point)
-├── 01-system-context.rst           # C4 context diagram explanation
-├── 02-containers.rst               # Container-level architecture
-├── 03-components.rst               # Component-level details
-├── 04-technology-stack.rst         # Technology choices and justification
-├── 05-data-flow.rst                # Data movement through system
-├── 06-scalability.rst              # Scaling strategy
-├── 07-security.rst                 # Security architecture
-├── 08-integration-points.rst       # External system integrations
-└── diagrams/
-    ├── system-context.drawio       # C4 Context diagram (draw.io format)
-    ├── containers.drawio           # C4 Containers diagram
-    ├── components.drawio           # C4 Components diagram
-    └── data-flow.drawio            # Data flow diagram
+docs/writerside/topics/architecture/
+├── overview.md                     # Main architecture document (entry point)
+├── system-context.md               # C4 context diagram explanation
+├── containers.md                   # Container-level architecture
+├── components.md                   # Component-level details
+├── technology-stack.md             # Technology choices and justification
+├── data-flow.md                    # Data movement through system
+├── scalability.md                  # Scaling strategy
+├── security.md                     # Security architecture
+└── integration-points.md           # External system integrations
+
+docs/writerside/images/diagrams/
+├── system-context.drawio           # C4 Context diagram (draw.io format)
+├── containers.drawio               # C4 Containers diagram
+├── components.drawio               # C4 Components diagram
+└── data-flow.drawio                # Data flow diagram
 ```
 
-**Contents: 00-overview.rst (Main Entry Point)**
+**Contents: overview.md (Main Entry Point)**
 
-```rst
-System Architecture
-===================
+```markdown
+# System Architecture
 
-.. warning::
-   INTERNAL DOCUMENTATION - Level 2 Access
-   This document contains proprietary system architecture.
-   Do not share with external parties.
+<warning>
+<p>INTERNAL DOCUMENTATION - Level 2 Access</p>
+<p>This document contains proprietary system architecture. Do not share with external parties.</p>
+</warning>
 
-.. contents::
-   :local:
-   :depth: 2
-
-Overview
---------
+## Overview
 
 Provide a high-level explanation of the system purpose and scope.
 
-.. figure:: diagrams/system-context.drawio
-   :alt: System context diagram
-   :width: 800px
-   
-   Figure 1: System context showing external entities and interactions.
+![System context showing external entities and interactions](diagrams/system-context.png){width="800"}
 
-Architecture Layers
--------------------
+## Architecture Layers
 
 Describe the layered architecture (e.g., API layer, business logic, persistence).
 
-.. toctree::
-   :maxdepth: 1
+## Related Topics
 
-   01-system-context
-   02-containers
-   03-components
-   04-technology-stack
-   05-data-flow
-   06-scalability
-   07-security
-   08-integration-points
+- [System Context](system-context.md)
+- [Containers](containers.md)
+- [Components](components.md)
+- [Technology Stack](technology-stack.md)
+- [Data Flow](data-flow.md)
+- [Scalability](scalability.md)
+- [Security Architecture](security.md)
+- [Integration Points](integration-points.md)
 
-Key Design Decisions
---------------------
+## Key Design Decisions
 
 Reference Architecture Decision Records (ADRs) that explain why key choices were made.
 
-See :doc:`/decisions/index` for detailed decision records.
+See [Decision Log](decisions.md) for detailed decision records.
 ```
 
 ---
@@ -694,14 +676,15 @@ See :doc:`/decisions/index` for detailed decision records.
 - **Frequency:** Continuous (part of development workflow)
 
 **Format:**
-- **REST API:** OpenAPI YAML specification + reST narrative documentation
-- **GraphQL API:** GraphQL SDL specification + reST narrative documentation
-- **gRPC API:** Proto3 specification + reST narrative documentation
+- **REST API:** OpenAPI YAML specification + Markdown narrative documentation (Writerside)
+- **GraphQL API:** GraphQL SDL specification + Markdown narrative documentation (Writerside)
+- **gRPC API:** Proto3 specification + Markdown narrative documentation (Writerside)
 - **Internal APIs:** Same format as public equivalents
 
 **Location:**
 - Specifications: `/api-specs/` (root level)
-- Narrative docs: `/docs/source/api-reference/`
+- Narrative docs: `/docs/writerside/topics/api-reference/`
+- OpenAPI integration: Reference OpenAPI specs in Writerside topics
 
 **Directory Structure:**
 
@@ -712,44 +695,43 @@ Project Root/
 │   ├── schema.graphql              # GraphQL schema
 │   └── services.proto              # gRPC service definitions
 │
-docs/source/api-reference/
-├── 00-index.rst                    # API documentation entry point
-├── 01-overview.rst                 # API overview and philosophy
-├── 02-authentication.rst           # Auth mechanisms for all APIs
-├── 03-rate-limits.rst              # Rate limiting and quotas
-├── 04-errors.rst                   # Error codes and meanings
-├── 05-versioning.rst               # API versioning strategy
+docs/writerside/topics/api-reference/
+├── overview.md                     # API documentation entry point
+├── authentication.md               # Auth mechanisms for all APIs
+├── rate-limits.md                  # Rate limiting and quotas
+├── errors.md                       # Error codes and meanings
+├── versioning.md                   # API versioning strategy
 ├── rest/
-│   ├── 00-index.rst                # REST API entry point
-│   ├── 01-reference.rst            # Link to Swagger UI (from OpenAPI YAML)
-│   ├── 02-tutorials/
-│   │   ├── first-calculation.rst
-│   │   └── batch-processing.rst
-│   └── 03-examples.rst             # Code examples for all languages
+│   ├── overview.md                 # REST API entry point
+│   ├── reference.md                # Embed OpenAPI spec or link to Swagger UI
+│   ├── tutorials/
+│   │   ├── first-calculation.md
+│   │   └── batch-processing.md
+│   └── examples.md                 # Code examples for all languages
 ├── graphql/
-│   ├── 00-index.rst                # GraphQL entry point
-│   ├── 01-schema.rst               # Schema definition
-│   ├── 02-playground.rst           # GraphQL Playground instructions
-│   ├── 03-queries.rst              # Query examples
-│   └── 04-subscriptions.rst        # Subscription examples
+│   ├── overview.md                 # GraphQL entry point
+│   ├── schema.md                   # Schema definition
+│   ├── playground.md               # GraphQL Playground instructions
+│   ├── queries.md                  # Query examples
+│   └── subscriptions.md            # Subscription examples
 ├── grpc/
-│   ├── 00-index.rst                # gRPC entry point
-│   ├── 01-services.rst             # Service definitions
-│   ├── 02-messages.rst             # Message types
-│   └── 03-examples.rst             # Code examples
+│   ├── overview.md                 # gRPC entry point
+│   ├── services.md                 # Service definitions
+│   ├── messages.md                 # Message types
+│   └── examples.md                 # Code examples
 ├── internal-apis/
-│   ├── 00-index.rst                # Internal APIs entry point
+│   ├── overview.md                 # Internal APIs entry point
 │   ├── rest/
-│   │   ├── index.rst
-│   │   └── services.rst
+│   │   ├── overview.md
+│   │   └── services.md
 │   ├── graphql/
-│   │   └── index.rst
+│   │   └── overview.md
 │   └── grpc/
-│       └── index.rst
+│       └── overview.md
 └── sdks/
-    ├── python.rst                  # Python SDK guide
-    ├── javascript.rst              # JavaScript SDK guide
-    └── java.rst                    # Java SDK guide
+    ├── python.md                   # Python SDK guide
+    ├── javascript.md               # JavaScript SDK guide
+    └── java.md                     # Java SDK guide
 ```
 
 **REST API Specification (OpenAPI YAML)**

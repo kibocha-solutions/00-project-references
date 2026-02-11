@@ -12,32 +12,42 @@ This framework provides canonical standards for production-grade technical docum
 
 ## CRITICAL: Documentation Format Standards
 
-**This project uses enterprise-grade documentation formats:**
+**This project uses Writerside for all technical documentation:**
+
+### Primary Documentation Tool
+- **Tool:** JetBrains Writerside (IntelliJ IDEA plugin)
+- **Installation:** IntelliJ IDEA Community Edition + Writerside plugin
+- **Format:** Markdown (CommonMark) with semantic XML markup
+- **Build:** Export to Web Archive (HTML) or PDF
+- **Preview:** Live preview in Writerside tool window
 
 ### API Documentation
-- **Format:** OpenAPI 3.0+ (formerly Swagger)
+- **Format:** OpenAPI 3.0+ (formerly Swagger) - UNCHANGED
 - **File Extension:** `.yaml` or `.json`
-- **Location:** `/api-specs/` or `/docs/api-specs/`
-- **Tools:** Swagger UI, Redoc, OpenAPI Generator
+- **Location:** `/api-specs/` or `/docs/writerside/api-specs/`
+- **Integration:** Writerside generates API docs from OpenAPI specs inline with narrative docs
 - **Validation:** `swagger-cli validate`, `openapi-generator validate`
+- **Note:** Writerside integrates OpenAPI reference with narrative documentation (solves the "separate website" problem)
 
-### All Other Technical Documentation
-- **Format:** reStructuredText (.rst)
-- **File Extension:** `.rst`
-- **Location:** `/docs/source/`
-- **Tools:** Sphinx, Read the Docs
-- **Build:** `sphinx-build -b html source build`
+### Technical Documentation (Narrative)
+- **Format:** Markdown (`.md`) with Writerside semantic markup
+- **File Extension:** `.md` (Markdown topics) or `.topic` (XML semantic topics)
+- **Location:** `/docs/writerside/topics/`
+- **Table of Contents:** `.tree` files (Writerside project structure)
+- **Build:** Writerside → Web Archive (static HTML)
+- **Semantic Elements:** `<procedure>`, `<tabs>`, `<code-block>`, `<note>`, `<warning>`, `<tip>`, etc.
 
-### Deprecated Formats (Reference Only)
-- **Markdown (.md):** Existing canon examples in `01-documentation-canons/` are provided in Markdown for historical reference and ease of understanding
-- **Usage:** Canon files themselves remain in Markdown for agent readability
-- **Actual Documentation:** All production documentation MUST be in reStructuredText (.rst) or OpenAPI
-- **Exception:** README.md, CHANGELOG.md, and ADRs may use Markdown
+### Legacy Format (Deprecated)
+- **reStructuredText (.rst):** No longer used for new documentation
+- **Sphinx:** Replaced by Writerside
+- **Migration:** Existing RST docs remain valid but new docs use Writerside
+- **Exception:** README.md, CHANGELOG.md, and ADRs continue using plain Markdown
 
 **Critical Rule:** When generating documentation:
-1. API specs → OpenAPI (.yaml)
-2. Technical docs → reStructuredText (.rst)
-3. Canon examples are Markdown → translate to .rst in production
+1. API specs → OpenAPI (.yaml) - integrated with Writerside
+2. Technical docs → Markdown (`.md`) with Writerside semantic markup
+3. Complex structures → Inject XML semantic elements into Markdown
+4. Table of contents → `.tree` files
 
 ---
 
@@ -119,22 +129,24 @@ This canon system provides:
 ├── 02-examples/                                 # Minimal illustrative examples
 │   ├── rest-api-example/                        # REST API example
 │   │   ├── api-spec.yaml                        # Example OpenAPI specification
-│   │   └── api-reference.rst                    # Example narrative documentation
+│   │   └── api-reference.md                     # Example narrative documentation (Writerside)
 │   │
 │   ├── architecture-example/                    # Architecture docs example
-│   │   └── 00-overview.rst                      # Example architecture document
+│   │   └── overview.md                          # Example architecture document (Writerside)
 │   │
 │   ├── operations-example/                      # Operations docs example
-│   │   └── runbook.rst                          # Example runbook
+│   │   └── runbook.md                           # Example runbook (Writerside)
 │   │
-│   └── complete-sphinx-setup/                   # Sphinx configuration example
-│       ├── conf.py                              # Example Sphinx config
-│       └── index.rst                            # Example documentation homepage
+│   └── complete-writerside-setup/               # Writerside configuration example
+│       ├── writerside.cfg                       # Example Writerside config
+│       ├── c.tree                               # Example table of contents
+│       └── topics/                              # Example topics directory
+│           └── starter.md                       # Example documentation homepage
 │
 ├── 03-reference/                                # Quick syntax references
 │   ├── docs-conversations.md                    # Original design conversation
 │   ├── diagrams-net-guide.md                    # diagrams.net usage guide
-│   ├── rest-syntax.md                           # reStructuredText quick reference (planned)
+│   ├── writerside-syntax.md                     # Writerside markup quick reference (planned)
 │   ├── openapi-syntax.md                        # OpenAPI quick reference (planned)
 │   ├── graphql-syntax.md                        # GraphQL SDL quick reference (planned)
 │   ├── proto3-syntax.md                         # Protocol Buffers quick reference (planned)
@@ -179,8 +191,7 @@ When you need to understand documentation standards:
 # Validate all documentation
 ./scripts/validate-docs.sh
 
-# Validate specific types
-./scripts/validate-docs.sh --rest
+# Validate OpenAPI specs
 ./scripts/validate-docs.sh --openapi
 
 # Install pre-commit hook
@@ -192,7 +203,7 @@ chmod +x .git/hooks/pre-commit
 
 GitHub Actions workflow (`.github/workflows/docs.yml`) automatically:
 - Validates all documentation on PR/push
-- Builds Sphinx documentation
+- Builds Writerside documentation
 - Deploys to GitHub Pages (on main branch)
 
 ---
@@ -215,7 +226,7 @@ GitHub Actions workflow (`.github/workflows/docs.yml`) automatically:
 11. **Changelogs** - Version history, release notes
 
 ### Documentation Infrastructure (New)
-12. **Documentation UI/Theming** - Sphinx themes, navigation, accessibility, visual design
+12. **Documentation UI/Theming** - Writerside customization, navigation, accessibility, visual design
 13. **Documentation Classification** - Public vs private, access levels, security assessment
 14. **Documentation Deployment** - Hosting platforms, CI/CD automation, authentication
 
@@ -247,14 +258,14 @@ See `03-reference/access-levels.md` for detailed classification guide.
 ### Documentation Formats
 
 This framework standardizes on:
-- **reStructuredText (.rst)** - ALL narrative documentation (architecture, deployment, operations, database, security, testing, user guides, configuration)
+- **Markdown with Writerside semantic markup (.md)** - ALL narrative documentation (architecture, deployment, operations, database, security, testing, user guides, configuration)
 - **OpenAPI 3.0+ (.yaml)** - REST API specifications
-- **Sphinx** - Documentation generation and build tool
+- **Writerside** - Documentation authoring, preview, and build tool
 - **GraphQL SDL** - GraphQL API schemas (if applicable)
 - **Protocol Buffers (Proto3)** - gRPC service definitions (if applicable)
-- **Markdown (.md)** - ONLY for: ADRs, README.md, CHANGELOG.md, and canon documentation files
+- **Markdown (.md)** - Plain Markdown for: ADRs, README.md, CHANGELOG.md, and canon documentation files
 
-**IMPORTANT:** Canon examples in `01-documentation-canons/` are written in Markdown for agent readability, but production documentation MUST be generated in reStructuredText (.rst) or OpenAPI (.yaml) formats.
+**IMPORTANT:** Canon examples in `01-documentation-canons/` are written in Markdown for agent readability, but production documentation uses Writerside features (semantic markup, live preview, etc.).
 
 ---
 
@@ -285,16 +296,18 @@ All changes to canon documents must be:
 
 **Agent Workflow:**
 1. Read `01-documentation-canons/api-documentation/_rest-api-canon.md`
-2. Discover: Need to create OpenAPI YAML + reST narrative docs
+2. Discover: Need to create OpenAPI YAML + Markdown narrative docs (Writerside)
 3. Check `03-reference/openapi-syntax.md` for syntax rules
 4. Review `02-examples/rest-api-example/` for working example
 5. Generate:
    - `/api-specs/service-api.yaml` (OpenAPI spec)
-   - `/docs/source/api-reference/00-index.rst` (API overview)
-   - `/docs/source/api-reference/authentication.rst` (Auth docs)
-   - `/docs/source/api-reference/errors.rst` (Error codes)
+   - `/docs/writerside/topics/api-reference/overview.md` (API overview)
+   - `/docs/writerside/topics/api-reference/authentication.md` (Auth docs)
+   - `/docs/writerside/topics/api-reference/errors.md` (Error codes)
+   - Update `.tree` file to include new topics in navigation
 6. Validate with `swagger-cli validate api-specs/service-api.yaml`
-7. Done.
+7. Preview in Writerside Preview tool window
+8. Done.
 
 ---
 

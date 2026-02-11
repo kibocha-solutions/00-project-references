@@ -1044,54 +1044,104 @@ When task requires domain-specific knowledge, read from:
 
 ## Section 13: Documentation Format Standards (MANDATORY)
 
-**Enterprise-Grade Documentation Requirements:**
+**Production Documentation Platform: JetBrains Writerside**
+
+### Primary Documentation Tool
+- **Tool:** JetBrains Writerside (IntelliJ IDEA plugin - FREE)
+- **Installation:** IntelliJ IDEA Community Edition + Writerside plugin
+- **Workflow:** Author here (VS Code/terminal) → Preview in Writerside (IntelliJ IDEA) → Export
+- **Format:** Markdown (CommonMark) with semantic XML markup
+- **Build:** Export to Web Archive (static HTML) or PDF
 
 ### API Documentation
-- **MUST use:** OpenAPI 3.0+ (formerly Swagger)
+- **MUST use:** OpenAPI 3.0+ (formerly Swagger) - UNCHANGED
 - **Format:** YAML or JSON
 - **File extension:** `.yaml` or `.json`
+- **Integration:** Writerside generates API docs from OpenAPI specs inline with narrative docs
 - **Validation:** Run `swagger-cli validate <file>.yaml` before commit
 - **Examples:** See `01-technical-documentation/02-examples/rest-api-example/`
+- **Note:** Writerside solves the "separate website" problem by integrating API reference with narrative documentation
 
 ### Technical Documentation (Non-API)
-- **MUST use:** reStructuredText (.rst)
-- **Format:** Plain text with RST markup
-- **File extension:** `.rst`
-- **Build tool:** Sphinx
+- **MUST use:** Markdown (`.md`) with Writerside semantic markup
+- **Format:** Markdown topics (`.md`) or XML semantic topics (`.topic`)
+- **File extension:** `.md` (primary) or `.topic` (advanced semantic structures)
+- **Build tool:** JetBrains Writerside
+- **Live Preview:** Writerside Preview tool window (automatic as you type)
+- **Semantic Elements:** `<procedure>`, `<tabs>`, `<code-block>`, `<note>`, `<warning>`, `<tip>`, etc.
 - **Examples:** Architecture, deployment, operations, database, security, testing, user guides
 
-### Markdown Usage (RESTRICTED)
-- **ONLY allowed for:**
-  - README.md files
-  - CHANGELOG.md files
-  - Architecture Decision Records (ADRs)
-  - Canon documentation files in `00-project-references/`
-- **NOT allowed for:** Production technical documentation, API documentation, user guides
+### Markdown Usage (Now PRIMARY)
+- **Primary format for:**
+  - All narrative technical documentation
+  - User guides and tutorials
+  - API narrative documentation (alongside OpenAPI specs)
+  - Architecture documentation
+  - Deployment documentation
+  - Operations runbooks
+- **Can inject XML:** For complex structures (procedures, tabs, conditional content)
+- **Table of Contents:** `.tree` files define navigation structure
+
+### Legacy Format (Deprecated)
+- **reStructuredText (.rst):** No longer used for new documentation
+- **Sphinx:** Replaced by Writerside
+- **Migration:** Existing RST docs remain valid but convert gradually to Writerside
+- **Exception:** README.md, CHANGELOG.md, ADRs continue using plain Markdown
 
 ### Canon Examples (Important Note)
-- Canon files in `01-technical-documentation/01-documentation-canons/` are written in Markdown
-- These are for **reference and agent readability only**
-- When generating actual documentation, translate examples to `.rst` or `.yaml` formats
-- Do NOT create production documentation in Markdown unless explicitly listed above
+- Canon files in `01-technical-documentation/01-documentation-canons/` remain in Markdown
+- These are for **reference and agent readability**
+- When generating actual documentation, use Writerside format (Markdown + semantic markup)
+- Do NOT create production documentation in plain Markdown - use Writerside features
 
 ### Documentation Generation Workflow
 
 **When asked to document an API:**
 1. Create OpenAPI specification (.yaml)
 2. Validate with `swagger-cli validate`
-3. Generate reference documentation from spec
-4. Create supplementary narrative docs in .rst (authentication, guides, etc.)
+3. Create Writerside Markdown topics referencing the OpenAPI spec
+4. Use Writerside's OpenAPI integration to embed API reference
+5. Create supplementary narrative docs in Markdown (authentication, guides, etc.)
 
 **When asked to create technical documentation:**
-1. Create .rst files following Sphinx structure
-2. Use proper RST directives (.. code-block::, .. note::, etc.)
-3. Build with `sphinx-build -b html source build`
-4. Validate links and references
+1. Create `.md` files in Writerside project structure
+2. Use Writerside semantic markup where needed (`<procedure>`, `<tabs>`, etc.)
+3. Define navigation in `.tree` files
+4. Preview in Writerside Preview tool window
+5. Export to Web Archive (HTML) when ready
+
+**Writerside Semantic Elements:**
+```markdown
+## Steps to Deploy
+
+<procedure title="Deploy to Production">
+<step>Build the application: <code>npm run build</code></step>
+<step>Run tests: <code>npm test</code></step>
+<step>Deploy: <code>npm run deploy</code></step>
+</procedure>
+
+<tabs>
+<tab title="JavaScript">
+<code-block lang="javascript">
+const result = await api.calculate(params);
+</code-block>
+</tab>
+<tab title="Python">
+<code-block lang="python">
+result = api.calculate(params)
+</code-block>
+</tab>
+</tabs>
+
+<note>
+<p>This integrates API specifications with narrative documentation.</p>
+</note>
+```
 
 **Syntax References:**
 - OpenAPI: `01-technical-documentation/03-reference/openapi-syntax.md`
-- reStructuredText: `01-technical-documentation/03-reference/rest-syntax.md`
-- Sphinx: Official Sphinx documentation
+- Writerside Markup: JetBrains Writerside official documentation
+- Markdown: CommonMark specification
 
 ---
 
